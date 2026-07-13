@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Довідка СЕД «Мегаполіс»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ECEDE8;
+    --card:#FFFFFF;
+    --ink:#1E2A3A;
+    --ink-soft:#5B6472;
+    --hairline:#DDDBD1;
+    --stamp:#304b70;
+    --stamp-tint:#bccbf7;
+    --stamp-dark:#20334f;
+    --focus:#a6bcd6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .shell{max-width:960px;margin:0 auto;padding:44px 24px 80px;}
+
+  header{margin-bottom:28px;max-width:600px;}
+  .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--stamp);font-weight:600;margin:0 0 8px;}
+  h1{font-family:'Golos Text',sans-serif;font-weight:700;font-size:30px;line-height:1.2;margin:0 0 10px;}
+  .sub{color:var(--ink-soft);font-size:15px;line-height:1.5;margin:0;}
+
+  .search-box{position:relative;margin:24px 0 28px;max-width:600px;}
+  .search-box input{width:100%;padding:14px 16px 14px 44px;font-size:15px;border:1.5px solid var(--hairline);border-radius:10px;background:var(--card);color:var(--ink);font-family:'Inter',sans-serif;}
+  .search-box input:focus{outline:none;border-color:var(--stamp);box-shadow:0 0 0 3px var(--focus);}
+  .search-box svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--ink-soft);fill:none;}
+
+  .layout{display:grid;grid-template-columns:230px 1fr;gap:28px;align-items:start;}
+  @media (max-width:720px){.layout{grid-template-columns:1fr;}}
+
+  nav.toc{
+    position:sticky;top:20px;display:flex;flex-direction:column;gap:2px;
+    background:var(--card);border:1px solid var(--hairline);border-radius:12px;padding:6px;
+  }
+  @media (max-width:720px){
+    nav.toc{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding:8px;}
+    nav.toc .toc-item{flex:0 0 auto;}
+  }
+  .toc-item{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+    cursor:pointer;color:var(--ink-soft);font-size:13.5px;font-weight:500;
+    border:1px solid transparent;white-space:nowrap;
+  }
+  .toc-item:hover{background:var(--paper);}
+  .toc-item.active{background:var(--stamp-tint);color:var(--stamp-dark);}
+  .toc-item svg{width:17px;height:17px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.8;}
+  .toc-item .n{margin-left:auto;font-size:11px;color:var(--ink-soft);opacity:.75;}
+  .toc-item.active .n{color:var(--stamp-dark);}
+
+  main{min-width:0;}
+  .count{font-size:13px;color:var(--ink-soft);margin:0 0 14px 2px;}
+
+  section.topic{margin-bottom:26px;}
+  .topic-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:0 2px;}
+  .topic-head svg{width:20px;height:20px;stroke:var(--stamp);fill:none;stroke-width:1.8;}
+  .topic-head h2{font-family:'Golos Text',sans-serif;font-size:17px;font-weight:600;margin:0;}
+  .topic-head .n{font-size:12.5px;color:var(--ink-soft);margin-left:2px;}
+
+  .card{background:var(--card);border:1px solid var(--hairline);border-radius:12px;margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+  .card:hover{border-color:var(--stamp);}
+  .q-row{display:flex;align-items:center;gap:12px;padding:14px 16px;}
+  .q-text{flex:1;font-weight:500;font-size:14.5px;line-height:1.4;}
+  .chevron{flex:0 0 auto;stroke:var(--ink-soft);fill:none;width:18px;height:18px;}
+
+  mark{background:#F5E3B3;color:var(--ink);border-radius:3px;padding:0 2px;}
+
+  .empty{text-align:center;padding:48px 16px;color:var(--ink-soft);font-size:14px;}
+  .empty svg{stroke:var(--hairline);fill:none;width:40px;height:40px;margin-bottom:12px;}
+
+  footer{margin-top:36px;font-size:12.5px;color:var(--ink-soft);}
+  footer a{color:var(--stamp);text-decoration:none;font-weight:500;}
+
+  .overlay{
+    position:fixed;inset:0;background:rgba(20, 22, 25, 0.35);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;z-index:100;opacity:0;pointer-events:none;
+    transition:opacity .18s ease;
+  }
+  .overlay.show{opacity:1;pointer-events:auto;}
+  .modal{
+    background:var(--card);border-radius:18px;max-width:600px;width:100%;
+    max-height:80vh;overflow-y:auto;padding:32px 32px 28px;
+    transform:scale(.96) translateY(6px);transition:transform .18s ease;
+    position:relative;
+  }
+  .overlay.show .modal{transform:scale(1) translateY(0);}
+  .modal-topic{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--stamp);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;}
+  .modal-topic svg{width:15px;height:15px;stroke:var(--stamp);fill:none;stroke-width:1.8;}
+  .modal h3{font-family:'Golos Text',sans-serif;font-size:22px;font-weight:600;line-height:1.3;margin:0 0 18px;}
+  .modal-body{font-size:16px;line-height:1.75;color:var(--ink-soft);white-space:pre-line;}
+  .modal-close{
+    position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;
+    border:1px solid var(--hairline);background:var(--card);display:flex;
+    align-items:center;justify-content:center;cursor:pointer;color:var(--ink-soft);
+  }
+  .modal-close:hover{border-color:var(--stamp);color:var(--stamp);}
+  .modal-close svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <p class="eyebrow">Відділ цифрової трансформації</p>
+    <h1>Довідка СЕД «Мегаполіс»</h1>
+    <p class="sub">Оберіть тему зліва або опишіть проблему в пошуку — наприклад «пароль», «резолюція» чи «друк».</p>
+  </header>
+
+  <div class="search-box">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="search" type="text" placeholder="Опишіть проблему...">
+  </div>
+
+  <div class="layout">
+    <nav class="toc" id="toc"></nav>
+    <main>
+      <p class="count" id="count"></p>
+      <div id="content"></div>
+      <div class="empty" id="empty" style="display:none">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>Нічого не знайдено. Спробуйте інший запит або зверніться до адміністратора Системи.</p>
+      </div>
+      <footer>Не знайшли відповідь? Зверніться до адміністратора Системи у вашому підрозділі, або у <a href="#">відділ цифрової трансформації</a>.</footer>
+    </main>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="modal-close" id="modalClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    <div class="modal-topic" id="modalTopic"></div>
+    <h3 id="modalQ"></h3>
+    <div class="modal-body" id="modalA"></div>
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  "Вхід у систему": '<path d="M15 7a4 4 0 1 0 -4 4"/><path d="M11 11l-7 7v3h3l7 -7"/><path d="M14 8l2 2"/>',
+  "Резолюції та завдання": '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2l4 -4"/>',
+  "Реєстрація": '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-3.5"/><path d="M4 20h4"/><path d="M6 17v6"/>',
+  "Друк і сканування": '<path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"/><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"/><rect x="7" y="13" width="10" height="8" rx="1"/>',
+  "Загальні питання": '<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12.01" y2="8"/><polyline points="11 12 12 12 12 16 13 16"/>',
+};
+
+const DATA = [
+  {cat:"Вхід у систему", q:"Як увійти в систему?", a:"Введіть у браузері посилання https://sed.smr.gov.ua/. У вікні, що з'явилося, введіть ваш логін і пароль."},
+  {cat:"Вхід у систему", q:"Після натискання на кнопку «Увійти» з'явилося нове поле для паролю", a:"Система просить змінити пароль, введіть поточний пароль і двічі новий у відповідні поля. Потім потрібно буде увійти знову з новим паролем."},
+  {cat:"Вхід у систему", q:"Після натискання на кнопку «Увійти» виникає помилка", a:"Перевірте правильність введення логіну і паролю (чи всі букви правильні, згадайте чи не змінювали пароль), та уточніть наявність у вас ліцензії."},
+  {cat:"Вхід у систему", q:"Забув логін або пароль", a:"Зверніться до адміністратора Системи (якщо немає у вашому департаменті/управлінні — у відділ цифрової трансформації)."},
+
+  {cat:"Резолюції та завдання", q:"Чому я не можу додати нову резолюцію в документ?", a:"Якщо документ виконано і він позначений «Закритий», то нову резолюцію вже додати неможливо. Після закриття документу можна додати лише просте завдання."},
+  {cat:"Резолюції та завдання", q:"Чи можна змінити резолюцію?", a:"Допоки резолюцію не виконано, автор резолюції може змінити її: ПКМ / Відкликати / Написати коментар чому відкликано / Внести зміни в резолюцію (двічі натиснути ЛКМ) / Зберегти / ПКМ / Передати на виконання."},
+  {cat:"Резолюції та завдання", q:"Я створив просте завдання, зберіг, але воно не передалось на виконання, що робити?", a:"Двічі натисніть на завдання, і у правому верхньому кутку вікна, що відкриється, буде стрілочка — натискаєте на неї і обираєте «Передати на виконання»."},
+  {cat:"Резолюції та завдання", q:"Немає кнопок в розділі «Резолюція»", a:"Зайдіть на документ не з пошуку, а саме з робочого столу (наприклад, базового)."},
+
+  {cat:"Реєстрація", q:"Як зареєструвати документ під своїм номером?", a:"Для автоматичної реєстрації зверніться до адміністратора Системи та повідомте останній зареєстрований номер у вашому журналі.\n\nДля ручної реєстрації: оберіть відповідний тип реєстрації при створенні документу, після відправки на підпис керівнику очікуйте документ у вікні «На реєстрації» на робочому столі реєстратора (з'явиться після підписання). Відкрийте документ, біля кнопки «Зареєструвати» вгорі справа натисніть стрілочку → «Ручна реєстрація». У вікні, що з'явиться, введіть повний реєстраційний номер (ігноруючи поле «тільки номер») і збережіть."},
+  {cat:"Реєстрація", q:"Не відображається у випадаючому списку потрібний журнал реєстрації або архівна справа", a:"Зверніться до адміністратора Системи (якщо немає у вашому департаменті/управлінні — у відділ цифрової трансформації)."},
+
+  {cat:"Друк і сканування", q:"Не хоче друкувати документ, що робити?", a:"По всіх питаннях налаштування орг.техніки звертайтесь до відділу інформаційних технологій і комп'ютерної техніки.\n\nЯкщо хочете спробувати самостійно: Вишиванка (вгорі справа) / Налаштування / Сканування та друк / Встановити розширення та додаток / Оновити сторінку (перезайти в систему) / знову Вишиванка / Налаштування / Сканування та друк / обрати сканер на вкладці «Сканування» / обрати принтер на вкладці «Друк на бланку»."},
+  {cat:"Друк і сканування", q:"Як додати образ файлу зі сканера", a:"Для підключення цієї функції зверніться до відділу інформаційних технологій та комп'ютерного забезпечення."},
+  {cat:"Друк і сканування", q:"Реєстраційна відмітка друкується не в тому місці, яке я обрав", a:"Вишиванка / Налаштування / Сканування та друк / на вкладці «Друк на бланку» оберіть розташування реєстраційної відмітки."},
+  {cat:"Друк і сканування", q:"Не друкується кількість аркушів додатків на реєстраційній відмітці", a:"У системі не передбачено можливості прописувати кількість сторінок додатків на реєстраційній відмітці — лише кількість сторінок основного документу.\n\nЗагальну кількість сторінок усього документу можна вказати при формуванні документа: вкладка «Загальні» → рядки «Аркушів», «Сторінок»."},
+  {cat:"Друк і сканування", q:"Не можу видалити реєстраційну відмітку, яку вже поставив", a:"Реєстраційну відмітку, яку вже поставлено, видалити неможливо. Зверніться до адміністратора Системи для видалення документу та зареєструйте його повторно."},
+
+  {cat:"Загальні питання", q:"Як делегувати повноваження / призначити т.в.о. / додати асистента (секретаря)?", a:"Вгорі справа є кольорове зображення «вишиванки» — натисніть на нього, оберіть «Делегування» → «Створити призначення» і заповніть відповідні поля. Після — натисніть синій значок у вигляді дискети для збереження."},
+  {cat:"Загальні питання", q:"Змінилася посада / назва підрозділу / прізвище / інша інформація", a:"Зверніться до адміністратора Системи (якщо немає у вашому департаменті/управлінні — у відділ цифрової трансформації)."},
+  {cat:"Загальні питання", q:"Що таке вхідні / внутрішні / вихідні документи?", a:"Вхідні — ті, що надходять на підрозділ ззовні, не через канцелярію (наприклад, звернення громадян).\n\nВнутрішні — листи, документи, розпорядження тощо, що надсилаються всередині СМР (наприклад, службова записка на відділ охорони праці, департамент фінансів, управління публічної інформації).\n\nВихідні — ті, що підрозділ надсилає за межі СМР (наразі не підключено, здійснюється через канцелярію)."},
+];
+
+const CATS = [...new Set(DATA.map(d=>d.cat))];
+let activeCat = null;
+
+function svg(cat, extraClass){
+  return `<svg class="${extraClass||''}" viewBox="0 0 24 24">${ICONS[cat]}</svg>`;
+}
+
+function highlight(text, term){
+  if(!term) return text;
+  const esc = term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return text.replace(new RegExp(esc,'gi'), m => `<mark>${m}</mark>`);
+}
+
+function renderToc(counts){
+  const toc = document.getElementById('toc');
+  toc.innerHTML = '';
+  const allItem = document.createElement('div');
+  allItem.className = 'toc-item' + (activeCat===null ? ' active':'');
+  allItem.innerHTML = `<svg viewBox="0 0 24 24" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg><span>Усі теми</span><span class="n">${DATA.length}</span>`;
+  allItem.onclick = () => { activeCat = null; render(); };
+  toc.appendChild(allItem);
+
+  CATS.forEach(c=>{
+    const item = document.createElement('div');
+    item.className = 'toc-item' + (activeCat===c ? ' active':'');
+    item.innerHTML = `${svg(c)}<span>${c}</span><span class="n">${counts[c]||0}</span>`;
+    item.onclick = () => { activeCat = (activeCat===c ? null : c); render(); };
+    toc.appendChild(item);
+  });
+}
+
+function render(){
+  const term = document.getElementById('search').value.trim().toLowerCase();
+
+  const matches = d => {
+    const matchesCat = activeCat ? d.cat===activeCat : true;
+    const matchesTerm = term ? (d.q+' '+d.a+' '+d.cat).toLowerCase().includes(term) : true;
+    return matchesCat && matchesTerm;
+  };
+
+  const counts = {};
+  CATS.forEach(c => counts[c] = DATA.filter(d => d.cat===c && (term ? (d.q+' '+d.a).toLowerCase().includes(term) : true)).length);
+  renderToc(counts);
+
+  const filtered = DATA.filter(matches);
+  document.getElementById('count').textContent = `${filtered.length} з ${DATA.length} питань`;
+  document.getElementById('empty').style.display = filtered.length ? 'none':'block';
+
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  const catsToShow = activeCat ? [activeCat] : CATS;
+  catsToShow.forEach(cat=>{
+    const items = filtered.filter(d=>d.cat===cat);
+    if(!items.length) return;
+    const section = document.createElement('section');
+    section.className = 'topic';
+    section.innerHTML = `<div class="topic-head">${svg(cat)}<h2>${cat}</h2><span class="n">— ${items.length}</span></div>`;
+    items.forEach(d=>{
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="q-row">
+          <div class="q-text">${highlight(d.q, term)}</div>
+          <svg class="chevron" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </div>
+      `;
+      card.onclick = () => openModal(d);
+      section.appendChild(card);
+    });
+    content.appendChild(section);
+  });
+}
+
+const overlay = document.getElementById('overlay');
+const modalTopic = document.getElementById('modalTopic');
+const modalQ = document.getElementById('modalQ');
+const modalA = document.getElementById('modalA');
+
+function openModal(d){
+  modalTopic.innerHTML = `${svg(d.cat)}<span>${d.cat}</span>`;
+  modalQ.textContent = d.q;
+  modalA.textContent = d.a;
+  overlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  overlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalClose').onclick = closeModal;
+overlay.onclick = (e) => { if(e.target === overlay) closeModal(); };
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+document.getElementById('search').addEventListener('input', render);
+render();
+</script>
+</body>
+</html>
