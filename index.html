@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Довідка СЕД «Мегаполіс»</title>
+<title>Довідка СЕД «Megapolis.DocNet»</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -78,6 +78,28 @@
   footer{margin-top:36px;font-size:14.5px;color:var(--ink-soft);}
   footer a{color:var(--stamp);text-decoration:none;font-weight:500;}
 
+  .feedback-banner{
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    background:var(--stamp);color:#fff;border-radius:16px;
+    padding:24px 26px;margin-top:40px;
+  }
+  .feedback-banner svg{width:30px;height:30px;flex:0 0 auto;stroke:#fff;fill:none;stroke-width:1.6;}
+  .feedback-banner-text{flex:1;min-width:220px;}
+  .feedback-banner-title{font-family:'Golos Text',sans-serif;font-weight:600;font-size:19px;margin:0 0 4px;}
+  .feedback-banner-sub{font-size:15px;opacity:.85;margin:0;}
+  .feedback-btn{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;box-sizing:border-box;
+    background:#fff;color:var(--stamp-dark);font-weight:600;font-size:15px;
+    padding:12px 20px;border-radius:10px;text-decoration:none;transition:filter .15s;
+    text-align:center;
+  }
+  .feedback-btn:hover{filter:brightness(0.95);}
+  .feedback-btn svg{stroke:var(--stamp-dark);}
+  @media (min-width:521px){
+    .feedback-btn{width:auto;min-width:200px;}
+  }
+
   .resource-banner{
     display:flex;align-items:center;gap:14px;
     background:var(--stamp-tint);border:1px solid var(--stamp);border-radius:12px;
@@ -124,7 +146,7 @@
 
   <header>
     <p class="eyebrow">Відділ цифрової трансформації</p>
-    <h1>Довідка СЕД «Мегаполіс»</h1>
+    <h1>Довідка СЕД «Megapolis.DocNet»</h1>
     <p class="sub">Оберіть тему зліва або опишіть проблему в пошуку — наприклад «пароль», «резолюція» чи «друк».</p>
   </header>
 
@@ -151,7 +173,17 @@
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <p>Нічого не знайдено. Спробуйте інший запит або зверніться до адміністратора Системи.</p>
       </div>
-      <footer>Не знайшли відповідь? <a href="https://docs.google.com/forms/d/e/1FAIpQLSeAzTfa2jphwMEcYZJxPHc1_m53c1lvHe6Y6mFg2Udt7_nvhQ/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">Опишіть свою проблему</a>.</footer>
+      <div class="feedback-banner">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h8"/><path d="M8 13h6"/><path d="M4 4h16v13H8l-4 4z"/></svg>
+        <div class="feedback-banner-text">
+          <p class="feedback-banner-title">Не знайшли відповідь або маєте пропозиції?</p>
+          <p class="feedback-banner-sub">Заповніть коротку форму — це займе хвилину, і ми оперативно відповімо.</p>
+        </div>
+        <a class="feedback-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSeAzTfa2jphwMEcYZJxPHc1_m53c1lvHe6Y6mFg2Udt7_nvhQ/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">
+          Заповнити форму
+          <svg width="16" height="16" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+        </a>
+      </div>
     </main>
   </div>
 </div>
@@ -171,7 +203,7 @@ const ICONS = {
   "Резолюції та завдання": '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2l4 -4"/>',
   "Реєстрація": '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-3.5"/><path d="M4 20h4"/><path d="M6 17v6"/>',
   "Друк і сканування": '<path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"/><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"/><rect x="7" y="13" width="10" height="8" rx="1"/>',
-  "Загальні питання": '<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12.01" y2="8"/><polyline points="11 12 12 12 12 16 13 16"/>',
+  "Загальні питання": '<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12.01" y2="8"/><line x1="12" y1="11.5" x2="12" y2="16"/>',
 };
 
 const DATA = [
@@ -203,7 +235,7 @@ const CATS = [...new Set(DATA.map(d=>d.cat))];
 let activeCat = null;
 
 function svg(cat, extraClass){
-  return `<svg class="${extraClass||''}" viewBox="0 0 24 24">${ICONS[cat]}</svg>`;
+  return `<svg class="${extraClass||''}" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">${ICONS[cat]}</svg>`;
 }
 
 function highlight(text, term){
