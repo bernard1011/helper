@@ -150,6 +150,15 @@
     background:var(--stamp-tint);border-left:3px solid var(--stamp);
     border-radius:0 8px 8px 0;padding:10px 14px;margin:14px 0;font-size:15px;color:var(--stamp-dark);
   }
+  .modal-body.rich .action-list{
+    display:flex;flex-direction:column;gap:12px;
+    background:var(--paper);border:1px solid var(--hairline);border-radius:10px;
+    padding:16px 18px;margin:10px 0 20px;
+  }
+  .modal-body.rich .action-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px;}
+  .modal-body.rich .action-row svg{width:18px;height:18px;stroke:var(--stamp);fill:none;stroke-width:1.8;flex:0 0 auto;}
+  .modal-body.rich .action-row .action-label{color:var(--stamp);font-weight:600;font-size:15px;}
+  .modal-body.rich .action-row .arrow-icon{stroke:#6fae4a;}
 
   .lightbox{
     position:fixed;inset:0;background:rgba(10,10,14,.88);z-index:200;
@@ -388,8 +397,22 @@ const MANUAL_SECTIONS = [
     <img src="images/manager-05-pass-to-review.png" alt="Кнопка передати на розгляд">
     <p class="fig-caption">Рисунок 6</p>
     <p>Відкривши документ знову, можна натиснути «ознайомлений» (якщо документ не потребує передачі), або додати резолюцію та натиснути «передати на виконання».</p>
-    <img src="images/manager-06-acquainted.png" alt="Кнопка ознайомлений і додавання резолюції">
-    <p class="fig-caption">Рисунок 7</p>
+    <div class="action-list">
+      <div class="action-row">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2l4 -4"/><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+        <span class="action-label">Ознайомлений</span>
+        <svg class="arrow-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <span class="action-label">Передати на виконання</span>
+      </div>
+      <div class="action-row">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7a4 4 0 1 1 8 0M4 21v-2a4 4 0 0 1 4 -4h1m8 -3l3 3l-3 3m-3 -3h6"/></svg>
+        <span class="action-label">Змінити розглядаючого</span>
+      </div>
+      <div class="action-row">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M9 13l-4 -4l4 -4M5 9h11a4 4 0 0 1 0 8h-1"/></svg>
+        <span class="action-label">Повернути з розгляду</span>
+      </div>
+    </div>
     `},
 
   {cat:"Для керівника", q:"«На виконання»", search:"на виконання виконано результат коментар створити документ",
