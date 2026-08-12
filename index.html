@@ -124,14 +124,31 @@
   .modal{
     background:var(--card);border-radius:18px;max-width:600px;width:100%;
     max-height:80vh;overflow-y:auto;padding:32px 32px 28px;
-    transform:scale(.96) translateY(6px);transition:transform .18s ease;
+    transform:scale(.96) translateY(6px);transition:transform .18s ease, max-width .18s ease;
     position:relative;
   }
+  .modal.wide{max-width:760px;}
   .overlay.show .modal{transform:scale(1) translateY(0);}
   .modal-topic{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--stamp);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;}
   .modal-topic svg{width:17px;height:17px;stroke:var(--stamp);fill:none;stroke-width:1.8;}
   .modal h3{font-family:'Golos Text',sans-serif;font-size:25px;font-weight:600;line-height:1.35;margin:0 0 18px;}
   .modal-body{font-size:18px;line-height:1.8;color:var(--ink-soft);white-space:pre-line;}
+  .modal-body.rich{white-space:normal;}
+  .modal-body.rich h4{font-family:'Golos Text',sans-serif;font-size:16px;font-weight:600;color:var(--ink);margin:24px 0 8px;}
+  .modal-body.rich h4:first-child{margin-top:0;}
+  .modal-body.rich p{margin:0 0 12px;}
+  .modal-body.rich ol, .modal-body.rich ul{margin:0 0 14px;padding-left:22px;}
+  .modal-body.rich li{margin-bottom:6px;}
+  .modal-body.rich img{
+    display:block;width:100%;max-width:100%;border-radius:10px;
+    border:1px solid var(--hairline);margin:10px 0 4px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+  }
+  .modal-body.rich .fig-caption{font-size:13px;color:var(--ink-soft);opacity:.75;text-align:center;margin:0 0 18px;}
+  .modal-body.rich .note{
+    background:var(--stamp-tint);border-left:3px solid var(--stamp);
+    border-radius:0 8px 8px 0;padding:10px 14px;margin:14px 0;font-size:15px;color:var(--stamp-dark);
+  }
   .modal-close{
     position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;
     border:1px solid var(--hairline);background:var(--card);display:flex;
@@ -272,6 +289,7 @@ const ICONS = {
   "Реєстрація": '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-3.5"/><path d="M4 20h4"/><path d="M6 17v6"/>',
   "Друк і сканування": '<path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"/><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"/><rect x="7" y="13" width="10" height="8" rx="1"/>',
   "Загальні питання": '<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12.01" y2="8"/><line x1="12" y1="11.5" x2="12" y2="16"/>',
+  "Для керівника": '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8v-2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v2"/><line x1="3" y1="13" x2="21" y2="13"/><line x1="12" y1="12" x2="12" y2="14"/>',
 };
 
 const DEFAULT_DATA = [
@@ -299,15 +317,146 @@ const DEFAULT_DATA = [
   {cat:"Загальні питання", q:"Що таке вхідні / внутрішні / вихідні документи?", a:"Вхідні — ті, що надходять на підрозділ ззовні, не через канцелярію (наприклад, звернення громадян).\n\nВнутрішні — листи, документи, розпорядження тощо, що надсилаються всередині СМР (наприклад, службова записка на відділ охорони праці, департамент фінансів, управління публічної інформації).\n\nВихідні — ті, що підрозділ надсилає за межі СМР (наразі не підключено, здійснюється через канцелярію)."},
 ];
 
+const MANUAL_SECTIONS = [
+  {cat:"Для керівника", q:"Розділ 1. Вхід та знайомство з робочим столом", search:"вхід логін пароль робочий стіл базовий монітор розділи документи термін",
+    html:`
+    <p>Перейдіть за посиланням <a href="https://sed.smr.gov.ua/" target="_blank" rel="noopener">https://sed.smr.gov.ua/</a>.</p>
+    <ol>
+      <li>З'являється сторінка входу в Систему.</li>
+      <li>Натисніть <strong>«Додаткові параметри входу»</strong>.</li>
+      <li>У полях, що з'явилися, введіть свій <strong>логін і пароль</strong>.</li>
+      <li>При довгій роботі в Системі буде з'являтися подібне вікно входу — необхідно знову ввести логін і пароль.</li>
+    </ol>
+    <img src="images/manager-01-login.png" alt="Сторінка входу в Megapolis.DocNet">
+    <p class="fig-caption">Рисунок 1 — сторінка входу</p>
+
+    <h4>Базовий робочий стіл</h4>
+    <p>Після входу відображаються всі документи по розділах: «на розгляд», «на підпис», «на виконання», «на візування», «я контролер» і «до відома».</p>
+    <img src="images/manager-02-desktop.png" alt="Базовий робочий стіл користувача">
+    <p class="fig-caption">Рисунок 2 — базовий робочий стіл</p>
+
+    <h4>Зміна вигляду робочого столу</h4>
+    <p>Вгорі справа — іконка монітора: можна обрати формат вигляду робочого столу — «базовий», «співробітника», «виконавця», «реєстратора». Розділи, що відображаються, змінюються відповідно до обраного вигляду.</p>
+    <p>Робочий стіл «Мої завдання» показує всі невиконані задачі узгодження, розгляду, виконання, передачі документа по руху й контролю поточного користувача — в одному місці.</p>
+    <img src="images/manager-03-desktop-switch.png" alt="Перемикання вигляду робочого столу">
+    <p class="fig-caption">Рисунок 4 — вибір вигляду робочого столу</p>
+
+    <h4>Термін виконання</h4>
+    <p>На робочому столі документи відображаються по розділах. Колір зліва показує терміновість:</p>
+    <ul>
+      <li><strong>зелений</strong> — більше 3 днів на виконання</li>
+      <li><strong>жовтий</strong> — менше 3 днів на виконання</li>
+      <li><strong>червоний</strong> — прострочено</li>
+      <li><strong>сірий</strong> — без терміну (документи «для інформації»)</li>
+    </ul>
+    <img src="images/manager-04-doc-list.png" alt="Документи на робочому столі за розділами">
+    <p class="fig-caption">Рисунок 5 — документи за розділами</p>
+    <div class="note">Для ознайомлення з документом двічі натисніть на нього.</div>
+    `},
+
+  {cat:"Для керівника", q:"Розділ 2. Робота з документами", search:"на розгляд на виконання для інформації на підпис на візування резолюція виконано затвердити відхилити кеп підпис",
+    html:`
+    <h4>«На розгляд»</h4>
+    <p>Це відповіді на ваші листи, або листи, що потребують вашого розгляду і подальшого накладання резолюції.</p>
+    <p>Для подальшої роботи з документом і накладанням резолюції натисніть <strong>«передати на розгляд»</strong>. Документ закриється і буде знову доступний у розділі «на розгляд», але вже з доступом до резолюції.</p>
+    <p>Якщо документ помилково надійшов вам, і розглядати його має інша особа, або документ потребує доопрацювання — натисніть «змінити розглядаючого» або «повернути з розгляду» відповідно.</p>
+    <img src="images/manager-05-pass-to-review.png" alt="Кнопка передати на розгляд">
+    <p class="fig-caption">Рисунок 6</p>
+    <p>Відкривши документ знову, можна натиснути «ознайомлений» (якщо документ не потребує передачі), або додати резолюцію та натиснути «передати на виконання».</p>
+    <img src="images/manager-06-acquainted.png" alt="Кнопка ознайомлений і додавання резолюції">
+    <p class="fig-caption">Рисунок 7</p>
+
+    <h4>«На виконання»</h4>
+    <p>Документи в цьому розділі потребують відповіді.</p>
+    <p>Для відмітки виконання натисніть на синій напис <strong>«виконання»</strong>, вкажіть дату, оберіть зі списку результат виконання і впишіть коментар (наприклад «проведено нараду»). Потім натисніть зелену кнопку «виконано».</p>
+    <p>Якщо необхідно передати іншому виконавцю — додайте резолюцію і натисніть «передати на виконання». Якщо будете створювати відповідь — натисніть «створити документ».</p>
+    <img src="images/manager-07-execution.png" alt="Відмітка виконання документа">
+    <p class="fig-caption">Рисунок 8</p>
+
+    <h4>«Для інформації»</h4>
+    <p>Не потребують обов'язкової відповіді. Для відмітки ознайомлення — так само натисніть «виконання», вкажіть дату й коментар, натисніть «виконано». Якщо необхідно передати на ознайомлення — додайте резолюцію і натисніть «ознайомити».</p>
+    <img src="images/manager-08-for-info.png" alt="Документи для інформації">
+    <p class="fig-caption">Рисунок 9</p>
+
+    <h4>«Мені на підпис» та «мені на візування»</h4>
+    <ul>
+      <li><strong>Затвердити</strong> — підписати документ</li>
+      <li><strong>Додати етап візування</strong> — якщо потрібен ще чийсь підпис перед затвердженням</li>
+      <li><strong>Відхилити</strong> — повертається на доопрацювання</li>
+      <li><strong>Внести зміни</strong> — керівник змінює документ, і співробітники заново проводять з ним дії</li>
+    </ul>
+    <img src="images/manager-09-approve-buttons.png" alt="Кнопки затвердити, відхилити, внести зміни">
+    <p class="fig-caption">Рисунок 10</p>
+    <p>При підписанні <strong>КЕПом</strong> натисніть «затвердити», у новому повідомленні дозвольте доступ до бібліотеки підпису:</p>
+    <img src="images/manager-10-kep-permission.png" alt="Дозвіл доступу до бібліотеки підпису КЕП">
+    <p class="fig-caption">Рисунок 10 — дозвіл доступу</p>
+    <p>У вікні, що з'явилося, оберіть тип носія, назву, введіть пароль. Потім натисніть «завантажити».</p>
+    <img src="images/manager-11-kep-password.png" alt="Введення пароля КЕП">
+    <p class="fig-caption">Рисунок 11</p>
+    `},
+
+  {cat:"Для керівника", q:"Розділ 3. Створення резолюції", search:"резолюція проста структурована задача ознайомлення зміст мені на контроль тип завдання виконавець роль відкликати проєкт",
+    html:`
+    <p>Натисніть <strong>«+»</strong> у розділі «Резолюції».</p>
+    <img src="images/manager-12b-add-resolution.png" alt="Кнопка додавання нової резолюції">
+    <p class="fig-caption">Рисунок 12 — додавання резолюції</p>
+    <p>Оберіть тип резолюції:</p>
+    <ul>
+      <li><strong>Проста</strong> — резолюція, яка має одне завдання</li>
+      <li><strong>Структурована резолюція</strong> — резолюція, яка включає в себе кілька пунктів</li>
+      <li><strong>Задача</strong> — якщо треба дати завдання окремо від основного завдання документа (уточнити інформацію тощо)</li>
+      <li><strong>Ознайомлення</strong> — для інформації</li>
+    </ul>
+    <img src="images/manager-12-resolution-types.png" alt="Вибір типу резолюції">
+    <p class="fig-caption">Рисунок 13 — вибір типу резолюції</p>
+
+    <h4>Створення простої резолюції</h4>
+    <p>Оберіть просту резолюцію зі списку та заповніть дані у вікні, що з'явилося:</p>
+    <img src="images/manager-14b-simple-resolution-form.png" alt="Форма створення простої резолюції">
+    <p class="fig-caption">Рисунок 14 — форма простої резолюції</p>
+    <ul>
+      <li><strong>Зміст</strong> — опис завдання по документу (наприклад «надати інформацію»). Можна створити шаблон: введіть текст змісту, натисніть «по шаблону» → «створити шаблон», у новому вікні дайте йому назву.</li>
+      <li><strong>Мені на контроль</strong> — галочка для підтвердження кожного етапу роботи з документом (за необхідності). Для керівників — при натисканні на стрілочку біля резолюції буде відображатися інформація про виконання кожного виконавця, яку треба погодити або повернути.</li>
+      <li><strong>Тип завдання</strong> — інформаційний (до відома), на дату (на конкретну дату), періодичний (наприклад раз на тиждень), постійний (до виконання, поки не знято із завдання).</li>
+      <li><strong>Виконавець</strong> — кому на виконання (натиснувши стрілочку поруч, можна додати ще виконавців; правою кнопкою — видалити або зробити головним).</li>
+      <li><strong>Роль</strong> — головний (основний виконавець; якщо виконає — співвиконавці теж автоматично), співвиконавець (доповнює інформацію по резолюції), контролер (контроль виконання), для інформації (до відома).</li>
+    </ul>
+    <p>Після заповнення резолюції закрийте вікно і натисніть <strong>«Передати на виконання»</strong>.</p>
+    <img src="images/manager-13-pass-to-execution.png" alt="Кнопка передати на виконання">
+    <p class="fig-caption">Рисунок 15</p>
+    <p>Якщо після цього виявлені помилки — натисніть правою кнопкою по резолюції, оберіть «Відкликати» і впишіть у коментар причину (наприклад «зміна терміну»). Після виправлення резолюції знову натисніть правою кнопкою і оберіть «Передати на виконання».</p>
+    <div class="note">Якщо біля вашої резолюції написано «ПРОЄКТ» або прізвища відображаються жовтим кольором — ви не натиснули кнопку «передати на виконання», і виконавець не отримав листа.</div>
+    `},
+
+  {cat:"Для керівника", q:"Розділ 4. Додаткові функції", search:"пошук фільтр лійка реєстраційний номер документ швидкий пошук",
+    html:`
+    <p>Для швидкого пошуку документу оберіть на робочому столі розділ, де він має бути (на розгляд, на виконання тощо), потім натисніть на знак лійки (фільтр). Оберіть критерій «документ» або «реєстраційний номер».</p>
+    <img src="images/manager-14-filter-icon.png" alt="Іконка фільтра-лійки">
+    <p class="fig-caption">Рисунок 16</p>
+    <p>У вікні зі стрілкою оберіть критерій «містить», у наступному пропишіть номер документа. Натисніть знак лупи для пошуку.</p>
+    <img src="images/manager-15-search-criteria.png" alt="Критерій пошуку містить">
+    <p class="fig-caption">Рисунок 17</p>
+    <p>Приклад результату пошуку:</p>
+    <img src="images/manager-16-search-result.png" alt="Приклад результату пошуку">
+    <p class="fig-caption">Рисунок 18</p>
+    <div class="note">При такому пошуку ви зможете редагувати і проводити дії над документом. Якщо шукати через «лупу» у верхній частині екрана — можна лише переглядати.</div>
+    `}
+];
+
 async function loadData(){
+  let faqRows;
   try{
     const res = await fetch('/api/faq');
     if(res.ok){
       const rows = await res.json();
-      if(Array.isArray(rows) && rows.length) return rows;
+      faqRows = (Array.isArray(rows) && rows.length) ? rows : JSON.parse(JSON.stringify(DEFAULT_DATA));
+    } else {
+      faqRows = JSON.parse(JSON.stringify(DEFAULT_DATA));
     }
-  }catch(e){}
-  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }catch(e){
+    faqRows = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+  return [...faqRows, ...MANUAL_SECTIONS];
 }
 
 let DATA = [];
@@ -344,17 +493,21 @@ function renderToc(counts){
   });
 }
 
+function searchableText(d){
+  return d.q + ' ' + (d.search || d.a || '') + ' ' + d.cat;
+}
+
 function render(){
   const term = document.getElementById('search').value.trim().toLowerCase();
 
   const matches = d => {
     const matchesCat = activeCat ? d.cat===activeCat : true;
-    const matchesTerm = term ? (d.q+' '+d.a+' '+d.cat).toLowerCase().includes(term) : true;
+    const matchesTerm = term ? searchableText(d).toLowerCase().includes(term) : true;
     return matchesCat && matchesTerm;
   };
 
   const counts = {};
-  getCats().forEach(c => counts[c] = DATA.filter(d => d.cat===c && (term ? (d.q+' '+d.a).toLowerCase().includes(term) : true)).length);
+  getCats().forEach(c => counts[c] = DATA.filter(d => d.cat===c && (term ? searchableText(d).toLowerCase().includes(term) : true)).length);
   renderToc(counts);
 
   const filtered = DATA.filter(matches);
@@ -395,7 +548,15 @@ const modalA = document.getElementById('modalA');
 function openModal(d){
   modalTopic.innerHTML = `${svg(d.cat)}<span>${d.cat}</span>`;
   modalQ.textContent = d.q;
-  modalA.textContent = d.a;
+  if(d.html){
+    modalA.className = 'modal-body rich';
+    modalA.innerHTML = d.html;
+    document.getElementById('modal').classList.add('wide');
+  } else {
+    modalA.className = 'modal-body';
+    modalA.textContent = d.a;
+    document.getElementById('modal').classList.remove('wide');
+  }
   overlay.classList.add('show');
   document.body.style.overflow = 'hidden';
 }
@@ -515,6 +676,7 @@ function renderAdmin(){
   }
 
   getCats().forEach(cat=>{
+    if(cat === 'Для керівника') return; // вбудований розділ, редагується лише через код сторінки
     const title = document.createElement('div');
     title.className = 'admin-section-title';
     title.textContent = cat;
