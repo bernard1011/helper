@@ -127,7 +127,7 @@
     transform:scale(.96) translateY(6px);transition:transform .18s ease, max-width .18s ease;
     position:relative;
   }
-  .modal.wide{max-width:920px;}
+  .modal.wide{max-width:1100px;max-height:92vh;}
   .overlay.show .modal{transform:scale(1) translateY(0);}
   .modal-topic{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--stamp);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;}
   .modal-topic svg{width:17px;height:17px;stroke:var(--stamp);fill:none;stroke-width:1.8;}
@@ -159,7 +159,7 @@
   }
   .lightbox.show{opacity:1;pointer-events:auto;}
   .lightbox img{
-    max-width:100%;max-height:100%;border-radius:8px;
+    width:min(90vw, 1600px);height:90vh;object-fit:contain;border-radius:8px;
     box-shadow:0 12px 40px rgba(0,0,0,.4);
     transform:scale(.97);transition:transform .18s ease;
   }
