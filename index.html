@@ -127,7 +127,7 @@
     transform:scale(.96) translateY(6px);transition:transform .18s ease, max-width .18s ease;
     position:relative;
   }
-  .modal.wide{max-width:760px;}
+  .modal.wide{max-width:920px;}
   .overlay.show .modal{transform:scale(1) translateY(0);}
   .modal-topic{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--stamp);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;}
   .modal-topic svg{width:17px;height:17px;stroke:var(--stamp);fill:none;stroke-width:1.8;}
@@ -140,15 +140,36 @@
   .modal-body.rich ol, .modal-body.rich ul{margin:0 0 14px;padding-left:22px;}
   .modal-body.rich li{margin-bottom:6px;}
   .modal-body.rich img{
-    display:block;width:100%;max-width:100%;border-radius:10px;
-    border:1px solid var(--hairline);margin:10px 0 4px;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
+    display:block;width:auto;max-width:100%;height:auto;border-radius:10px;
+    border:1px solid var(--hairline);margin:10px auto 4px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:zoom-in;transition:box-shadow .15s;
   }
+  .modal-body.rich img:hover{box-shadow:0 4px 16px rgba(0,0,0,.14);}
   .modal-body.rich .fig-caption{font-size:13px;color:var(--ink-soft);opacity:.75;text-align:center;margin:0 0 18px;}
   .modal-body.rich .note{
     background:var(--stamp-tint);border-left:3px solid var(--stamp);
     border-radius:0 8px 8px 0;padding:10px 14px;margin:14px 0;font-size:15px;color:var(--stamp-dark);
   }
+
+  .lightbox{
+    position:fixed;inset:0;background:rgba(10,10,14,.88);z-index:200;
+    display:flex;align-items:center;justify-content:center;padding:32px;
+    opacity:0;pointer-events:none;transition:opacity .18s ease;
+    cursor:zoom-out;
+  }
+  .lightbox.show{opacity:1;pointer-events:auto;}
+  .lightbox img{
+    max-width:100%;max-height:100%;border-radius:8px;
+    box-shadow:0 12px 40px rgba(0,0,0,.4);
+    transform:scale(.97);transition:transform .18s ease;
+  }
+  .lightbox.show img{transform:scale(1);}
+  .lightbox-close{
+    position:fixed;top:20px;right:24px;width:44px;height:44px;border-radius:50%;
+    background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  .lightbox-close svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;}
   .modal-close{
     position:absolute;top:20px;right:20px;width:32px;height:32px;border-radius:50%;
     border:1px solid var(--hairline);background:var(--card);display:flex;
@@ -280,6 +301,11 @@
   <div class="admin-foot">
     <button class="btn-secondary" id="adminLogout">Змінити токен</button>
   </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" id="lightboxClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+  <img id="lightboxImg" src="" alt="">
 </div>
 
 <script>
@@ -552,6 +578,9 @@ function openModal(d){
     modalA.className = 'modal-body rich';
     modalA.innerHTML = d.html;
     document.getElementById('modal').classList.add('wide');
+    modalA.querySelectorAll('img').forEach(img => {
+      img.onclick = () => openLightbox(img.src, img.alt);
+    });
   } else {
     modalA.className = 'modal-body';
     modalA.textContent = d.a;
@@ -566,7 +595,20 @@ function closeModal(){
 }
 document.getElementById('modalClose').onclick = closeModal;
 overlay.onclick = (e) => { if(e.target === overlay) closeModal(); };
-document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape'){ closeModal(); closeLightbox(); } });
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+function openLightbox(src, alt){
+  lightboxImg.src = src;
+  lightboxImg.alt = alt || '';
+  lightbox.classList.add('show');
+}
+function closeLightbox(){
+  lightbox.classList.remove('show');
+}
+lightbox.onclick = closeLightbox;
+document.getElementById('lightboxClose').onclick = (e) => { e.stopPropagation(); closeLightbox(); };
 
 // ---- Адмін-панель ----
 const isAdmin = new URLSearchParams(location.search).has('admin');
